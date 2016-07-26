@@ -16,7 +16,7 @@ using namespace std;
 
 #define RESIPROCATE_SUBSYSTEM AppSubsystem::GATEWAY
 
-void sleepSeconds(unsigned int seconds)
+void sleepForSeconds(unsigned int seconds)
 {
 #ifdef WIN32
    Sleep(seconds*1000);
@@ -85,7 +85,7 @@ main (int argc, char** argv)
    }
 
    InfoLog(<< "ichat-gw is shutdown.");
-   sleepSeconds(2);
+   sleepForSeconds(2);
 }
 
 /* ====================================================================

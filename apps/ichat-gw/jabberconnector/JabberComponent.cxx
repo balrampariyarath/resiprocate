@@ -1,9 +1,10 @@
-
 #if defined( WIN32 )
 #include <time.h>
 #endif
 
 #include <sstream>
+#include <presence.h>
+
 #include "rutil/ResipAssert.h"
 #include <algorithm>
 #include "../Version.hxx"
