@@ -120,7 +120,7 @@ public:
    virtual void lock() { mMutex.lock(); }
    virtual void unlock() { mMutex.unlock(); }
 private:
-   gloox::Mutex mMutex;
+   gloox::util::Mutex mMutex;
 };
 IPCMutexGloox g_IPCGlooxMutex;
 
@@ -563,7 +563,7 @@ JabberComponent::storeIChatPresence(const gloox::JID& jid, const gloox::Presence
    IChatUserMap::iterator it = mIChatUsers.find(jid.bare());
    if(it == mIChatUsers.end())
    {
-      if(presence != gloox::PresenceUnavailable && !jid.resource().empty())
+      if(presence != gloox::PresenceType && !jid.resource().empty())
       {
          // User is not yet present in map
          IChatUser* iChatUser = new IChatUser(*this, jid.bare());
@@ -934,7 +934,7 @@ JabberComponent::handlePresence(Stanza *stanza)
       }
       break;
 
-   case StanzaPresenceUnavailable:
+   case StanzaPresenceType:
       // Signals that the entity is no longer available for communication.
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handlePresence - Unavailable for " + stanza->from().full());
 
@@ -1128,20 +1128,20 @@ JabberComponent::handleDiscoNodeFeatures(const std::string& node)
    return slist;
 }
 
-StringMap 
+Disco::IdentityList 
 JabberComponent::handleDiscoNodeIdentities(const std::string& node, std::string& name)
 {
    handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleDiscoNodeIdentities - node=" + node + ", name=" + name);
-   StringMap smap;
+   Disco::IdentityList smap;
    smap["client"] = "pc";
    return smap;
 }
 
-DiscoNodeItemList 
+Disco::ItemList 
 JabberComponent::handleDiscoNodeItems(const std::string& node)
 {
    handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleDiscoNodeItems - node=" + node);
-   DiscoNodeItemList dlist;
+   Disco::ItemList dlist;
    return dlist;
 }
 
