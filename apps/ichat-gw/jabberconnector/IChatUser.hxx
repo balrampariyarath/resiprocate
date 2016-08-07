@@ -43,7 +43,7 @@ public:
 
    typedef std::set<std::string> SubscribedGatewayUserList;
 
-   void updateResourceInfo(const std::string& resourceId, const gloox::Presence::Presence& presence, int priority, bool avAvail);
+   void updateResourceInfo(const std::string& resourceId, const gloox::Presence& presence, int priority, bool avAvail);
    bool isUnavailable();
    const std::string& getMostAvailableResource();
    bool getMostAvailableResourceList(std::list<std::string>& resourceList);

@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <presence.h>
+#include <message.h>
 
 #include "rutil/ResipAssert.h"
 #include <algorithm>
@@ -563,7 +564,7 @@ JabberComponent::storeIChatPresence(const gloox::JID& jid, const gloox::Presence
    IChatUserMap::iterator it = mIChatUsers.find(jid.bare());
    if(it == mIChatUsers.end())
    {
-      if(presence != gloox::PresenceType && !jid.resource().empty())
+      if(presence.presence() != gloox::Presence::Unavailable && !jid.resource().empty())
       {
          // User is not yet present in map
          IChatUser* iChatUser = new IChatUser(*this, jid.bare());
@@ -830,13 +831,13 @@ JabberComponent::onTLSConnect(const CertInfo& info)
 }
 
 void 
-JabberComponent::handleSubscription( Stanza *stanza )
+JabberComponent::handleSubscription( Subscription *stanza )
 {
    switch( stanza->subtype() )
    {
-      case StanzaS10nSubscribe:
+      case Subscription::Subscribe:
       {
-         handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleSubscription - StanzaS10nSubscribe");
+         handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleSubscription - Subscribe");
          if(stanza->to().full() == mControlJID)
          {
             sendSubscriptionResponse(stanza->from().bare(), stanza->to().full(), true);
@@ -847,9 +848,9 @@ JabberComponent::handleSubscription( Stanza *stanza )
          }
          break;
       }
-      case StanzaS10nUnsubscribe:
+      case Subscription::Unsubscribe:
       {
-         handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleSubscription - StanzaS10nUnsubscribe");
+         handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleSubscription - Unsubscribe");
          Tag *p = new Tag( "presence" );
          p->addAttribute( "type", "unsubscribed" );
          p->addAttribute( "to", stanza->from().bare() );
@@ -870,13 +871,13 @@ JabberComponent::handleSubscription( Stanza *stanza )
 }
 
 void 
-JabberComponent::handlePresence(Stanza *stanza)
+JabberComponent::handlePresence(Presence *stanza)
 {
    bool iChatResource = false;
    bool avAvail=false;
 
    // Check if iChat endpoint
-   Tag* c = stanza->findChild("c");
+   Tag* c = stanza->tag()->findChild("c");
    if(c)
    {
       std::string node = c->findAttribute("node");
@@ -897,20 +898,20 @@ JabberComponent::handlePresence(Stanza *stanza)
    // presence info
    switch(stanza->subtype())
    {
-   case StanzaPresenceProbe:
+   case gloox::Presence::Probe:
       // A request for an entity's current presence
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handlePresence - Probe from " + stanza->from().full());
       sendPresenceForRequest(stanza);
       break;
 
-   case StanzaPresenceAvailable:
+   case gloox::Presence::Available:
       // Signals to the server that the sender is online and available for communication.
 
       if(iChatResource)
       {
          handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handlePresence - PresenceAvailable from " + stanza->from().full());
          // Ensure we are tracking client
-         storeIChatPresence(stanza->from(), stanza->presence(), stanza->priority(), avAvail);
+         storeIChatPresence(stanza->from(), *stanza, stanza->priority(), avAvail);
 
          // Check if we have an outstanding iChat Call request
          if(avAvail)
@@ -934,23 +935,23 @@ JabberComponent::handlePresence(Stanza *stanza)
       }
       break;
 
-   case StanzaPresenceType:
+   case gloox::Presence::Unavailable:
       // Signals that the entity is no longer available for communication.
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handlePresence - Unavailable for " + stanza->from().full());
 
       // Ensure we are tracking client
-      storeIChatPresence(stanza->from(), stanza->presence(), stanza->priority(), avAvail);
+      storeIChatPresence(stanza->from(), *stanza, stanza->priority(), avAvail);
 
       // Check if we have an outstanding iChat Call request to fail
       failOutstandingClientIChatCallRequest(stanza->from().bare(), 404);
       break;
 
-   case StanzaPresenceError:
+   case gloox::Presence::Error:
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handlePresence - Error for " + stanza->from().full());
 
       {
          unsigned int code = 0;
-         Tag *error = stanza->findChild( "error" );
+         Tag *error = stanza->tag()->findChild( "error" );
          if(error)
          {
             code = atoi(error->findAttribute("code").c_str());
@@ -970,22 +971,22 @@ void
 JabberComponent::handleMessage(Stanza* stanza, MessageSession* session)
 {
    std::ostringstream oss;
-   oss << "JabberComponent::handlePresence - " << *stanza;
+   oss << "JabberComponent::handlePresence - " << stanza;
    handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, oss.str());
-   Stanza *s = Stanza::createMessageStanza(stanza->from().full(), "You have reached the ichat gateway!" );
-   s->addAttribute("from", stanza->to().full());
+   Message *s = new Message(Message::Normal, stanza->from().full(), "You have reached the ichat gateway!" );
+   s->tag()->addAttribute("from", stanza->to().full());
 
-   mComponent->send( s );
+   mComponent->send(*s);
 }
 
 bool 
-JabberComponent::handleIq(Stanza *stanza)
+JabberComponent::handleIq(IQ *stanza)
 {
-   if(stanza->subtype() == StanzaIqSet && stanza->xmlns() == "apple:iq:vc:request")
+   if(stanza->subtype() == IQ::Set && stanza->tag()->xmlns() == "apple:iq:vc:request")
    {
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "Jabber::handleIq - apple:iq:vc:request from=" + stanza->from().full() + ", to=" + stanza->to().full());
-      Tag::TagList tlist = stanza->children();
-      Tag* query = stanza->findChild("query");
+      TagList tlist = stanza->tag()->children();
+      Tag* query = stanza->tag()->findChild("query");
       Tag* vcNewCallerIPPortDataTag;
       if(query)
       {
@@ -1022,7 +1023,7 @@ JabberComponent::handleIq(Stanza *stanza)
       // Pass request to SIP side
       notifyIChatCallRequest(stanza->to().bare(), stanza->from().bare());
    }
-   else if(stanza->subtype() == StanzaIqSet && stanza->xmlns() == "apple:iq:vc:counterProposal")
+   else if(stanza->subtype() == IQ::Set && stanza->tag()->xmlns() == "apple:iq:vc:counterProposal")
    {
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "Jabber::handleIq - apple:iq:vc:counterProposal from=" + stanza->from().full() + ", to=" + stanza->to().full());
 
@@ -1040,16 +1041,16 @@ JabberComponent::handleIq(Stanza *stanza)
          mComponent->send(iq);
       }
    }
-   else if(stanza->subtype() == StanzaIqSet && stanza->xmlns() == "apple:iq:vc:cancel")
+   else if(stanza->subtype() == IQ::Set && stanza->tag()->xmlns() == "apple:iq:vc:cancel")
    {
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "Jabber::handleIq - apple:iq:vc:cancel from=" + stanza->from().full() + ", to=" + stanza->to().full());
       cancelOutstandingServerIChatCallRequest(stanza->to().bare(), stanza->from().bare());
    }
-   else if(stanza->subtype() == StanzaIqSet && stanza->xmlns() == "apple:iq:vc:response")
+   else if(stanza->subtype() == IQ::Set && stanza->tag()->xmlns() == "apple:iq:vc:response")
    {
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "Jabber::handleIq - apple:iq:vc:response from=" + stanza->from().full() + ", to=" + stanza->to().full());
-      Tag::TagList tlist = stanza->children();
-      Tag* query = stanza->findChild("query");
+      TagList tlist = stanza->tag()->children();
+      Tag* query = stanza->tag()->findChild("query");
       Tag* vcNewCallerIPPortDataTag;
       if(query)
       {
@@ -1074,10 +1075,10 @@ JabberComponent::handleIq(Stanza *stanza)
          }
       }
    }
-   else if(stanza->subtype() == StanzaIqError && stanza->xmlns() == "apple:iq:vc:request")
+   else if(stanza->subtype() == IQ::Error && stanza->tag()->xmlns() == "apple:iq:vc:request")
    {
       unsigned int code = 0;
-      Tag *error = stanza->findChild( "error" );
+      Tag *error = stanza->tag()->findChild( "error" );
       if(error)
       {
         code = atoi(error->findAttribute("code").c_str());
@@ -1089,7 +1090,7 @@ JabberComponent::handleIq(Stanza *stanza)
    else
    {
       std::ostringstream oss;
-      oss << "Jabber::handleIq - " << *stanza;
+      oss << "Jabber::handleIq - " << stanza;
       handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, oss.str());
    }
    return true;
@@ -1128,11 +1129,11 @@ JabberComponent::handleDiscoNodeFeatures(const std::string& node)
    return slist;
 }
 
-Disco::IdentityList 
+StringMap
 JabberComponent::handleDiscoNodeIdentities(const std::string& node, std::string& name)
 {
    handleLog(gloox::LogLevelDebug, gloox::LogAreaUser, "JabberComponent::handleDiscoNodeIdentities - node=" + node + ", name=" + name);
-   Disco::IdentityList smap;
+   StringMap smap;
    smap["client"] = "pc";
    return smap;
 }

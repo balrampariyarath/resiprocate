@@ -13,6 +13,9 @@
 #define RESIP_CONTRIB_GLOOX
 #endif
 
+#include <subscription.h>
+#include <tag.h>
+
 // Gloox includes
 #ifndef RESIP_CONTRIB_GLOOX
 #include <gloox/component.h>
@@ -129,13 +132,13 @@ private:
    virtual void onConnect();
    virtual void onDisconnect(gloox::ConnectionError e);
    virtual bool onTLSConnect(const gloox::CertInfo& info);
-   virtual void handleSubscription(gloox::Stanza *stanza);
-   virtual void handlePresence(gloox::Stanza *stanza);
+   virtual void handleSubscription(gloox::Subscription *stanza);
+   virtual void handlePresence(gloox::Presence *stanza);
    virtual void handleMessage(gloox::Stanza* stanza, gloox::MessageSession* session = 0);
-   virtual bool handleIq(gloox::Stanza *stanza);
+   virtual bool handleIq(gloox::IQ *stanza);
    virtual bool handleIqID(gloox::Stanza *stanza, int context);
    virtual gloox::StringList handleDiscoNodeFeatures(const std::string& node);
-   virtual gloox::Disco::IdentityList handleDiscoNodeIdentities(const std::string& node, std::string& name);
+   virtual gloox::StringMap handleDiscoNodeIdentities(const std::string& node, std::string& name);
    virtual gloox::Disco::ItemList handleDiscoNodeItems(const std::string& node);
 
    virtual void thread();
