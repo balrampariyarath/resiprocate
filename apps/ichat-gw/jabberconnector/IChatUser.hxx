@@ -18,6 +18,7 @@
 #include <src/presence.h>
 #endif
 
+#include <jid.h>
 namespace gateway
 {
 
@@ -26,8 +27,8 @@ class JabberComponent;
 class ResourceInfo
 {
 public:
-   ResourceInfo(const gloox::Presence& presence, int priority, bool avAvail) :
-      mPresence(presence), mPriority(priority), mAvAvail(avAvail) {}
+   ResourceInfo(const gloox::Presence& presence, const std::string& jid, int priority, bool avAvail) :
+        mPresence(presence.presence(), jid) , mPriority(priority), mAvAvail(avAvail) {}
    ~ResourceInfo() {}
 
    gloox::Presence mPresence;
