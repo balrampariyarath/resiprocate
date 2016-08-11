@@ -111,7 +111,7 @@ public:
 
 private:
    void probePresence(const std::string& to);
-   void sendPresenceForRequest(gloox::Stanza* stanza);
+   void sendPresenceForRequest(const gloox::Presence& presence);
    void sendPresence(const std::string& to, const std::string& from, bool advertiseIChatSupport, bool available);
    void sendSubscriptionResponse(const std::string& to, const std::string& from, bool success);
 
@@ -132,14 +132,14 @@ private:
    virtual void onConnect();
    virtual void onDisconnect(gloox::ConnectionError e);
    virtual bool onTLSConnect(const gloox::CertInfo& info);
-   virtual void handleSubscription(gloox::Subscription *stanza);
-   virtual void handlePresence(gloox::Presence *stanza);
-   virtual void handleMessage(gloox::Stanza* stanza, gloox::MessageSession* session = 0);
-   virtual bool handleIq(gloox::IQ *stanza);
-   virtual bool handleIqID(gloox::Stanza *stanza, int context);
-   virtual gloox::StringList handleDiscoNodeFeatures(const std::string& node);
-   virtual gloox::StringMap handleDiscoNodeIdentities(const std::string& node, std::string& name);
-   virtual gloox::Disco::ItemList handleDiscoNodeItems(const std::string& node);
+   virtual void handleSubscription(const gloox::Subscription& subscription);
+   virtual void handlePresence(const gloox::Presence& presence);
+   virtual void handleMessage(const gloox::Message& msg, gloox::MessageSession* session = 0);
+   virtual bool handleIq(const gloox::IQ& iq);
+   virtual void handleIqID(const gloox::IQ& iq, int context);
+   virtual gloox::StringList handleDiscoNodeFeatures(const gloox::JID& from, const std::string& node);
+   virtual gloox::Disco::IdentityList handleDiscoNodeIdentities(const gloox::JID& from, const std::string& node);
+   virtual gloox::Disco::ItemList handleDiscoNodeItems(const gloox::JID& from, const gloox::JID& to, const std::string& node);
 
    virtual void thread();
 

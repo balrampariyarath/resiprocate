@@ -16,7 +16,7 @@ void sleepSeconds(unsigned int seconds)
 #endif
 }
 
-JabberComponent* g_component;
+JabberComponent *g_component;
 
 static void
 signalHandler(int signo)
