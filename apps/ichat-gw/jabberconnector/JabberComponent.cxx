@@ -3,9 +3,6 @@
 #endif
 
 #include <sstream>
-#include <presence.h>
-#include <message.h>
-
 #include "rutil/ResipAssert.h"
 #include <algorithm>
 #include "../Version.hxx"
@@ -15,9 +12,13 @@
 #ifndef RESIP_CONTRIB_GLOOX
 #include <gloox/disco.h>
 #include <gloox/mutex.h>
+#include <gloox/presence.h>
+#include <gloox/message.h>
 #else
 #include <src/disco.h>
 #include <src/mutex.h>
+#include <src/presence.h>
+#include <src/message.h>
 #endif
 
 using namespace gateway;

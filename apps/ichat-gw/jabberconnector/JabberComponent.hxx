@@ -13,9 +13,6 @@
 #define RESIP_CONTRIB_GLOOX
 #endif
 
-#include <subscription.h>
-#include <tag.h>
-
 // Gloox includes
 #ifndef RESIP_CONTRIB_GLOOX
 #include <gloox/component.h>
@@ -29,7 +26,10 @@
 #include <gloox/iqhandler.h>
 #include <gloox/disco.h>
 #include <gloox/disconodehandler.h>
+#include <gloox/subscription.h>
+#include <gloox/tag.h>
 #include <gloox/subscriptionhandler.h>
+
 #else
 #include <src/component.h>
 #include <src/mutex.h>
@@ -42,6 +42,8 @@
 #include <src/iqhandler.h>
 #include <src/disco.h>
 #include <src/disconodehandler.h>
+#include <src/subscription.h>
+#include <src/tag.h>
 #include <src/subscriptionhandler.h>
 #endif
 
