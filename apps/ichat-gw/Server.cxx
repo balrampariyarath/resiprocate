@@ -330,21 +330,23 @@ Server::Server(int argc, char** argv) :
 
    // Start Media Relay
    mMediaRelay = new MediaRelay(mIsV6Avail, mMediaRelayPortRangeMin, mMediaRelayPortRangeMax);
-
+   
+   SecurityTypes::TlsClientVerificationMode cvm = SecurityTypes::None;
+   SecurityTypes::SSLType sslType = SecurityTypes::NoSSL;
    // Add transports
    try
    {
       UdpTransport* udpTransport = (UdpTransport*)mStack.addTransport(UDP, mSipPort, DnsUtil::isIpV6Address(mAddress) ? V6 : V4, StunEnabled, mAddress);
       udpTransport->setExternalUnknownDatagramHandler(this);  // Install handler to catch iChat pinhole messages
       mStack.addTransport(TCP, mSipPort, DnsUtil::isIpV6Address(mAddress) ? V6 : V4, StunEnabled, mAddress);
-      mStack.addTransport(TLS, mTlsPort, DnsUtil::isIpV6Address(mAddress) ? V6 : V4, StunEnabled, mAddress, mTlsDomain);
+      mStack.addTransport(TLS, mTlsPort, DnsUtil::isIpV6Address(mAddress) ? V6 : V4, StunEnabled, mAddress, mTlsDomain, mTLSPrivateKeyPassPhrase, sslType, 0, mTLSCertificate, mTLSPrivateKey, cvm, false);
       if(mAddress.empty() && mIsV6Avail)
       {
          // if address is empty (ie. all interfaces), then create V6 transports too
          udpTransport = (UdpTransport*)mStack.addTransport(UDP, mSipPort, V6, StunEnabled, mAddress);
          udpTransport->setExternalUnknownDatagramHandler(this);  // Install handler to catch iChat pinhole messages
          mStack.addTransport(TCP, mSipPort, V6, StunEnabled, mAddress);
-         mStack.addTransport(TLS, mTlsPort, V6, StunEnabled, mAddress, mTlsDomain);
+         mStack.addTransport(TLS, mTlsPort, V6, StunEnabled, mAddress, mTlsDomain, mTLSPrivateKeyPassPhrase, sslType, 0, mTLSCertificate, mTLSPrivateKey, cvm, false);
       }
    }
    catch (BaseException& e)
