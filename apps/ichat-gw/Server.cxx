@@ -158,7 +158,7 @@ Server::Server(int argc, char** argv) :
    ConfigParser(argc, argv),
    mProfile(new MasterProfile),
 #if defined(USE_SSL)
-   mSecurity(new Security(".")),
+   mSecurity(new Security(Security::StrongestSuite, privateKeyPassPhrase, dhParamsFile)),
 #else
    mSecurity(0),
 #endif
@@ -332,7 +332,8 @@ Server::Server(int argc, char** argv) :
    mMediaRelay = new MediaRelay(mIsV6Avail, mMediaRelayPortRangeMin, mMediaRelayPortRangeMax);
    
    SecurityTypes::TlsClientVerificationMode cvm = SecurityTypes::None;
-   SecurityTypes::SSLType sslType = SecurityTypes::NoSSL;
+   SecurityTypes::SSLType sslType = SecurityTypes::None;
+   mSecurity->addCADirectory("/etc/ssl/certs"); // FIXME: add CADirectory parameter
    // Add transports
    try
    {

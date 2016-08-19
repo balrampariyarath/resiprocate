@@ -118,10 +118,12 @@ am__installdirs = "$(DESTDIR)$(bindir)" \
 PROGRAMS = $(bin_PROGRAMS)
 am_telepathy_resiprocate_OBJECTS = Common.$(OBJEXT) \
 	Connection.$(OBJEXT) moc_Connection.$(OBJEXT) \
+	TextChannel.$(OBJEXT) moc_TextChannel.$(OBJEXT) \
 	MyConversationManager.$(OBJEXT) \
 	moc_MyConversationManager.$(OBJEXT) \
 	MyMessageDecorator.$(OBJEXT) MyUserAgent.$(OBJEXT) \
-	moc_MyUserAgent.$(OBJEXT) Protocol.$(OBJEXT) \
+	moc_MyUserAgent.$(OBJEXT) MyInstantMessage.$(OBJEXT) \
+	moc_MyInstantMessage.$(OBJEXT) Protocol.$(OBJEXT) \
 	moc_Protocol.$(OBJEXT) SipCallChannel.$(OBJEXT) \
 	moc_SipCallChannel.$(OBJEXT) \
 	TelepathyConversationProfile.$(OBJEXT) \
@@ -421,9 +423,11 @@ telepathy_resiprocate_LDADD = ../../resip/recon/librecon.la \
 	-lQtCore -lssl -lcrypto -lpthread
 telepathy_resiprocate_SOURCES = Common.cxx \
 	Connection.cxx moc_Connection.cxx \
+	TextChannel.cxx moc_TextChannel.cxx \
 	MyConversationManager.cxx moc_MyConversationManager.cxx \
 	MyMessageDecorator.cxx \
 	MyUserAgent.cxx moc_MyUserAgent.cxx \
+	MyInstantMessage.cxx moc_MyInstantMessage.cxx \
 	Protocol.cxx moc_Protocol.cxx \
 	SipCallChannel.cxx moc_SipCallChannel.cxx \
 	TelepathyConversationProfile.cxx \
@@ -434,9 +438,11 @@ telepathy_resiprocate_SOURCES = Common.cxx \
 telepathy_resiprocateincludedir = $(includedir)/telepathy-resiprocate
 nobase_telepathy_resiprocateinclude_HEADERS = Common.hxx \
 	Connection.hxx \
+	TextChannel.hxx \
 	MyConversationManager.hxx \
 	MyMessageDecorator.hxx \
 	MyUserAgent.hxx \
+	MyInstantMessage.hxx \
 	SipCallChannel.hxx \
 	TelepathyConversationProfile.hxx \
 	TelepathyMasterProfile.hxx \
@@ -542,6 +548,7 @@ distclean-compile:
 #include ./$(DEPDIR)/Common.Po
 #include ./$(DEPDIR)/Connection.Po
 #include ./$(DEPDIR)/MyConversationManager.Po
+#include ./$(DEPDIR)/MyInstantMessage.Po
 #include ./$(DEPDIR)/MyMessageDecorator.Po
 #include ./$(DEPDIR)/MyUserAgent.Po
 #include ./$(DEPDIR)/Protocol.Po
@@ -549,11 +556,14 @@ distclean-compile:
 #include ./$(DEPDIR)/TelepathyConversationProfile.Po
 #include ./$(DEPDIR)/TelepathyMasterProfile.Po
 #include ./$(DEPDIR)/TelepathyParameters.Po
+#include ./$(DEPDIR)/TextChannel.Po
 #include ./$(DEPDIR)/moc_Connection.Po
 #include ./$(DEPDIR)/moc_MyConversationManager.Po
+#include ./$(DEPDIR)/moc_MyInstantMessage.Po
 #include ./$(DEPDIR)/moc_MyUserAgent.Po
 #include ./$(DEPDIR)/moc_Protocol.Po
 #include ./$(DEPDIR)/moc_SipCallChannel.Po
+#include ./$(DEPDIR)/moc_TextChannel.Po
 #include ./$(DEPDIR)/telepathy-resiprocate.Po
 
 .cxx.o:

@@ -22,7 +22,7 @@ static const uint qt_meta_data_tr__Connection[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -35,6 +35,8 @@ static const uint qt_meta_data_tr__Connection[] = {
       62,   15,   15,   15, 0x08,
       94,   77,   15,   15, 0x08,
      137,  119,   15,   15, 0x08,
+     184,  166,   15,   15, 0x08,
+     226,  218,   15,   15, 0x08,
 
        0        // eod
 };
@@ -44,6 +46,8 @@ static const char qt_meta_stringdata_tr__Connection[] = {
     "onConnected()\0doDisconnect()\0"
     "newStatus,reason\0setStatusSlot(uint,uint)\0"
     "caller,callHandle\0onIncomingCall(QString,uint)\0"
+    "identifier,status\0setContactStatus(QString,QString)\0"
+    "message\0onMessageReceived(resip::SipMessage)\0"
 };
 
 void tr::Connection::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -57,6 +61,8 @@ void tr::Connection::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 2: _t->doDisconnect(); break;
         case 3: _t->setStatusSlot((*reinterpret_cast< uint(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
         case 4: _t->onIncomingCall((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
+        case 5: _t->setContactStatus((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 6: _t->onMessageReceived((*reinterpret_cast< const resip::SipMessage(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -96,9 +102,9 @@ int tr::Connection::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 7;
     }
     return _id;
 }

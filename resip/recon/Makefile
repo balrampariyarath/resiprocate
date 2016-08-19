@@ -132,16 +132,17 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_librecon_la_OBJECTS = BridgeMixer.lo Conversation.lo \
 	ConversationManager.lo ConversationParticipantAssignment.lo \
 	ConversationProfile.lo DefaultDialogSet.lo DtmfEvent.lo \
-	FlowManagerSipXSocket.lo LocalParticipant.lo MediaEvent.lo \
-	MediaInterface.lo MediaResourceParticipant.lo \
+	FlowManagerSipXSocket.lo InstantMessage.lo LocalParticipant.lo \
+	MediaEvent.lo MediaInterface.lo MediaResourceParticipant.lo \
 	MediaResourceCache.lo MediaStreamEvent.lo Participant.lo \
 	ReconSubsystem.lo RelatedConversationSet.lo \
 	RemoteParticipant.lo RemoteParticipantDialogSet.lo \
 	SipXHelper.lo UserAgent.lo UserAgentClientSubscription.lo \
-	UserAgentDialogSetFactory.lo UserAgentMasterProfile.lo \
-	UserAgentRegistration.lo UserAgentServerAuthManager.lo \
-	sdp/Sdp.lo sdp/SdpCandidate.lo sdp/SdpCandidatePair.lo \
-	sdp/SdpCodec.lo sdp/SdpHelperResip.lo sdp/SdpMediaLine.lo
+	UserAgentClientPublication.lo UserAgentDialogSetFactory.lo \
+	UserAgentMasterProfile.lo UserAgentRegistration.lo \
+	UserAgentServerAuthManager.lo sdp/Sdp.lo sdp/SdpCandidate.lo \
+	sdp/SdpCandidatePair.lo sdp/SdpCodec.lo sdp/SdpHelperResip.lo \
+	sdp/SdpMediaLine.lo
 librecon_la_OBJECTS = $(am_librecon_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -414,6 +415,7 @@ librecon_la_SOURCES = BridgeMixer.cxx \
         DefaultDialogSet.cxx \
         DtmfEvent.cxx \
         FlowManagerSipXSocket.cxx \
+        InstantMessage.cxx \
         LocalParticipant.cxx \
         MediaEvent.cxx \
                 MediaInterface.cxx \
@@ -428,6 +430,7 @@ librecon_la_SOURCES = BridgeMixer.cxx \
         SipXHelper.cxx \
         UserAgent.cxx \
         UserAgentClientSubscription.cxx \
+        UserAgentClientPublication.cxx \
         UserAgentDialogSetFactory.cxx \
         UserAgentMasterProfile.cxx \
         UserAgentRegistration.cxx \
@@ -446,6 +449,7 @@ nobase_reconinclude_HEADERS = ReconSubsystem.hxx \
         RelatedConversationSet.hxx \
         UserAgentServerAuthManager.hxx \
         ConversationManagerCmds.hxx \
+        InstantMessage.hxx \
         UserAgentMasterProfile.hxx \
         RemoteParticipantDialogSet.hxx \
         SipXHelper.hxx \
@@ -464,6 +468,7 @@ nobase_reconinclude_HEADERS = ReconSubsystem.hxx \
         DefaultDialogSet.hxx \
         Participant.hxx \
         UserAgentClientSubscription.hxx \
+        UserAgentClientPublication.hxx \
         UserAgent.hxx \
         ConversationParticipantAssignment.hxx \
         RemoteParticipant.hxx \
@@ -579,6 +584,7 @@ distclean-compile:
 #include ./$(DEPDIR)/DefaultDialogSet.Plo
 #include ./$(DEPDIR)/DtmfEvent.Plo
 #include ./$(DEPDIR)/FlowManagerSipXSocket.Plo
+#include ./$(DEPDIR)/InstantMessage.Plo
 #include ./$(DEPDIR)/LocalParticipant.Plo
 #include ./$(DEPDIR)/MediaEvent.Plo
 #include ./$(DEPDIR)/MediaInterface.Plo
@@ -592,6 +598,7 @@ distclean-compile:
 #include ./$(DEPDIR)/RemoteParticipantDialogSet.Plo
 #include ./$(DEPDIR)/SipXHelper.Plo
 #include ./$(DEPDIR)/UserAgent.Plo
+#include ./$(DEPDIR)/UserAgentClientPublication.Plo
 #include ./$(DEPDIR)/UserAgentClientSubscription.Plo
 #include ./$(DEPDIR)/UserAgentDialogSetFactory.Plo
 #include ./$(DEPDIR)/UserAgentMasterProfile.Plo
